@@ -25,4 +25,13 @@ group :development do
   # gem "spring"
 end
 
+group :development, :test do
+  gem 'rspec-rails'
+end
+
+group :test do
+  gem 'shoulda-matchers'
+end
+
 gem "foreman", "~> 0.88.1"
+gem "factory_bot_rails", "~> 6.4"
