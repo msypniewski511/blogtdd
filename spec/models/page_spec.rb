@@ -5,9 +5,9 @@ RSpec.describe Page, type: :model do
   describe 'validations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to be_valid }
-    context do
+    describe 'is expected to validate that :title cannot be empty/falsy' do
       let(:page) { create(:page) }
-      it "is expected to validate that :title cannot be empty/falsy" do
+      it do
         expect(page.title).to_not be_empty
       end
     end
@@ -15,11 +15,39 @@ RSpec.describe Page, type: :model do
     it { is_expected.to validate_uniqueness_of(:title) }
     it { is_expected.to validate_presence_of(:content) }
   end
-end
 
-describe '#slug' do
-  let(:page) { create(:page, title: '--Foo Bar! _ 87 --') }
-  it 'is generated from the title' do
-    expect(page.slug).to eq('foo-bar-87')
+  describe '#slug' do
+    let(:page) { create(:page, title: '--Foo Bar! _ 87 --') }
+    it 'is generated from the title' do
+      expect(page.slug).to eq('foo-bar-87')
+    end
+  end
+
+  describe 'scopes' do
+    describe '.published' do
+      let(:page1) { create(:page, :published) }
+      let(:page2) { create(:page) }
+
+      before do
+        [page1, page2]
+      end
+
+      it 'returns only published pages' do
+        expect(Page.published).to eq([page1])
+      end
+    end
+
+    describe '.ordered' do
+      let(:page1) { create(:page, created_at: 2.days.ago) }
+      let(:page2) { create(:page, created_at: 1.days.ago) }
+
+      before do
+        [page1, page2]
+      end
+
+      it 'returns ordered pages' do
+        expect(Page.ordered).to eq([page2, page1])
+      end
+    end
   end
 end

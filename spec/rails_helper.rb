@@ -68,4 +68,9 @@ RSpec.configure do |config|
       with.library :rails
     end
   end
+  config.before(:each, type: :system) do
+    driver = :selenium_chrome_headless
+    driver = :selenium_chrome if ENV['SHOW_CHROME']
+    driven_by(driver)
+  end
 end
